@@ -7,6 +7,6 @@ io.sockets.on('connection', function (socket) {
   });
 
 	socket.on("invite", function(data){
-		socket.emit("invite", {UID: data.targetUID});
+		socket.broadcast.emit("invite", {UID: data.targetUID});
 	});
 });
