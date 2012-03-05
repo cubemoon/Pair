@@ -5,4 +5,8 @@ io.sockets.on('connection', function (socket) {
   socket.on('my other event', function (data) {
     console.log(data);
   });
+
+	socket.on("invite", function(data){
+		socket.emit("invite", {UID: data.targetUID});
+	});
 });
