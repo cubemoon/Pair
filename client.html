@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+		"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript" src="jquery-1.7.1.js"></script>
+	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+	<script type="text/javascript">
+
+
+		$(document).ready(init);
+
+
+		var socket;
+		function init()
+		{
+			socket = io.connect("localhost", {port:8081});
+
+			socket.on("OPEN_ROOM", function(data)
+			{
+				console.log("open room received");
+				if(data.targetID == $("#appID").val()  &&  $("#appID").val() != $("#targetID").val())
+				{
+					socket.emit("JOIN_ROOM", {appID:$("#appID").val(), roomID:data.roomID});
+					$("#submit").val("disconnect");
+					$("#status").html("connected");
+				}
+			});
+
+			socket.on("ALL_LEFT", function(data)
+			{
+				$("#submit").val("connect");
+				$("#status").html("all left");
+			});
+		}
+
+
+		function connect()
+		{
+			$("#status").html("connected");
+
+			socket.emit("LOGIN", {appID:$("#appID").val(), targetID:$("#targetID").val()});
+		}
+
+		function disconnect()
+		{
+			$("#status").html("waiting");
+			socket.emit("DISCONNECT", {clientID:socket.socket.sessionid});
+		}
+
+		function button()
+		{
+
+			if($("#submit").val() == "disconnect")
+			{
+				$("#submit").val("connect");
+				disconnect();
+			}
+			else
+			{
+				$("#submit").val("disconnect");
+				connect();
+			}
+		}
+
+	</script>
+</head>
+<body>
+
+
+<input id="appID" placeholder="app id"/>
+<input id="targetID" placeholder="target id"/>
+<input id="submit" type="submit" value="connect" onclick="button();"/>
+<div id="status">waiting</div>
+
+
+</body>
+</html>
