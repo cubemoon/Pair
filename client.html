@@ -16,7 +16,7 @@
 		{
 			socket = io.connect("localhost", {port:8081});
 
-			socket.on("OPEN_ROOM", function(data)
+			socket.on("ROOM_CREATED", function(data)
 			{
 				console.log("open room received");
 				if(data.targetID == $("#appID").val()  &&  $("#appID").val() != $("#targetID").val())
@@ -32,6 +32,11 @@
 				$("#submit").val("connect");
 				$("#status").html("all left");
 			});
+
+			socket.on("RECEIVED_FROM_ROOM", function(data)
+			{
+				$("#chatText").html(data.message);
+			});
 		}
 
 
@@ -39,7 +44,7 @@
 		{
 			$("#status").html("connected");
 
-			socket.emit("LOGIN", {appID:$("#appID").val(), targetID:$("#targetID").val()});
+			socket.emit("CREATE_ROOM", {appID:$("#appID").val(), targetID:$("#targetID").val()});
 		}
 
 		function disconnect()
@@ -63,6 +68,11 @@
 			}
 		}
 
+		function chatSend()
+		{
+			socket.emit("SEND_TO_ROOM", {message:$("#chatIn").val()});
+		}
+
 	</script>
 </head>
 <body>
@@ -73,6 +83,10 @@
 <input id="submit" type="submit" value="connect" onclick="button();"/>
 <div id="status">waiting</div>
 
+
+<input id="chatIn" placeholder="enter message"/>
+<input id="chatSend" type="submit" value="send" onclick="chatSend();"/>
+<div id="chatText"></div>
 
 </body>
 </html>

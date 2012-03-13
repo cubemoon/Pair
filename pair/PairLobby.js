@@ -1,4 +1,4 @@
-var Room = require("./Room.js");
+var Room = require("./PairRoom.js");
 
 module.exports = function Lobby()
 {
@@ -36,7 +36,6 @@ module.exports = function Lobby()
 		if(room.population() == 1)
 		{
 			lastUser = room.getLastUser();
-			//TODO:last user a odayı kapadığını haber ver
 			this.handlers.roomClosedHandler(lastUser);
 
 			console.log(this.handlers);
@@ -76,5 +75,14 @@ module.exports = function Lobby()
 	this.userCount = function()
 	{
 		return Object.keys(this.userDictionary).length;
+	}
+
+
+	this.getRoomUsers = function(clientID)
+	{
+		var user = this.userDictionary[clientID];
+
+		var room = this.roomsDictionary[user.roomID];
+		return room.users;
 	}
 }

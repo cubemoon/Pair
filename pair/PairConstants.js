@@ -1,0 +1,8 @@
+exports.CREATE_ROOM 		= "CREATE_ROOM";
+exports.ROOM_CREATED 		= "ROOM_CREATED";
+exports.DISCONNECT 			= "DISCONNECT";
+exports.JOIN_ROOM 			= "JOIN_ROOM";
+exports.SEND_TO_ROOM 		= "SEND_TO_ROOM";
+exports.RECEIVED_FROM_ROOM 	= "RECEIVED_FROM_ROOM";
+exports.ALL_LEFT 			= "ALL_LEFT";
+
