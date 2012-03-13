@@ -44,7 +44,7 @@
 		{
 			$("#status").html("connected");
 
-			socket.emit("CREATE_ROOM", {appID:$("#appID").val(), targetID:$("#targetID").val()});
+			socket.emit("JOIN_ROOM", {appID:$("#appID").val(), roomID:$("#targetID").val()});
 		}
 
 		function disconnect()

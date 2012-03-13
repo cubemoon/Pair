@@ -7,12 +7,11 @@ module.exports = function Lobby()
 	this.userDictionary = {};
 	this.handlers = {};
 
-	this.createRoom = function(owner)
+	this.createRoom = function(user, roomID)
 	{
-		console.log(owner);
-		var room = new Room(owner);
-		this.roomsDictionary[owner.clientID] = room;
-		this.joinRoom(owner, owner.clientID);
+		var room = new Room(roomID);
+		this.roomsDictionary[roomID] = room;
+		this.joinRoom(user, roomID);
 
 		return room;
 	}
@@ -62,6 +61,12 @@ module.exports = function Lobby()
 	{
 		this.userDictionary[user.clientID] = user;
 		var room = this.roomsDictionary[roomID];
+
+		if(room == null)
+		{
+			console.log("Lobby.joinRoom() --> room "+roomID+" does not exist");
+			return;
+		}
 		room.join(user);
 
 		console.log("Lobby.joinRoom() --> room population " + room.population());
@@ -81,8 +86,29 @@ module.exports = function Lobby()
 	this.getRoomUsers = function(clientID)
 	{
 		var user = this.userDictionary[clientID];
+		if(user == null)
+		{
+			console.log("Lobby.getRoomUsers() --> user "+clientID+" is not logged in");
+			return;
+		}
 
 		var room = this.roomsDictionary[user.roomID];
+		if(room == null)
+		{
+			console.log("Lobby.getRoomUsers() --> user "+clientID+" is not in a room");
+			return;
+		}
+
 		return room.users;
+	}
+
+	this.doesRoomExists = function(roomID)
+	{
+		var room = this.roomsDictionary[roomID];
+
+		if(room == null)
+			return false;
+		else
+			return true;
 	}
 }

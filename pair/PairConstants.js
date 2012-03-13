@@ -1,4 +1,3 @@
-exports.CREATE_ROOM 		= "CREATE_ROOM";
 exports.ROOM_CREATED 		= "ROOM_CREATED";
 exports.DISCONNECT 			= "DISCONNECT";
 exports.JOIN_ROOM 			= "JOIN_ROOM";

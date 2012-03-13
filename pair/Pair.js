@@ -1,19 +1,24 @@
+var Lobby 		= require("./PairLobby.js");
+var User 		= require("./PairUser.js");
+var Constant 	= require("./PairConstants.js");
+
 var io = null;
+var lobby;
 
 exports.start = function(ioS)
 {
 	io = ioS;
 
-	var Lobby 		= require("./PairLobby.js");
-	var User 		= require("./PairUser.js");
-	var Constant 	= require("./PairConstants.js");
-
-	var lobby = new Lobby();
+	lobby = new Lobby();
 	lobby.handlers = {roomClosedHandler:roomClosedHandler};
 
 
 	io.sockets.on('connection', function (socket) {
-		socket.on(Constant.CREATE_ROOM, function(data){
+		socket.on(Constant.DISCONNECT, function(data){
+			lobby.leaveRoom(data.clientID);
+		});
+
+		socket.on(Constant.JOIN_ROOM, function(data){
 			if(data.appID == ""  ||  data.appID == null)
 			{
 				console.log("LOGIN -> app has no id");
@@ -21,17 +26,11 @@ exports.start = function(ioS)
 			}
 
 			var user = new User(data.appID, socket.id, socket);
-			var room = lobby.createRoom(user);
-			socket.broadcast.emit(Constant.ROOM_CREATED, {roomID : room.id, targetID : data.targetID});
-		});
 
-		socket.on(Constant.DISCONNECT, function(data){
-			lobby.leaveRoom(data.clientID);
-		});
-
-		socket.on(Constant.JOIN_ROOM, function(data){
-			var user = new User(data.appID, socket.id, socket);
-			lobby.joinRoom(user, data.roomID);
+			if(lobby.doesRoomExists(data.roomID))
+				joinRoom(user, data.roomID);
+			else
+				createRoom(socket, user, data.roomID);
 		});
 
 		socket.on('disconnect', function () {
@@ -53,6 +52,21 @@ exports.start = function(ioS)
 
 	});
 }
+
+/**********  SOCKET EVENTS  **********/
+function joinRoom(user, roomID)
+{
+	lobby.joinRoom(user, roomID);
+}
+
+function createRoom(socket, user, roomID)
+{
+	var room = lobby.createRoom(user, roomID);
+	socket.broadcast.emit(Constant.ROOM_CREATED, {roomID : room.id});
+}
+
+
+/**********  ACTIONS  **********/
 
 
 /**********  HANDLERS  **********/

@@ -1,9 +1,8 @@
-module.exports = function Room(owner)
+module.exports = function Room(roomID)
 {
 	this.classname = "Room";
 
-	this.id = owner.clientID;
-	this.owner = owner;
+	this.id = roomID;
 	this.users = {};
 
 	this.join = function(user)
